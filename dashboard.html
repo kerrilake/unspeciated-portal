@@ -60,6 +60,7 @@
         .logo {
             width: 60px;
             height: 60px;
+            object-fit: contain;
         }
         
         .header-text h1 {
@@ -84,6 +85,7 @@
             height: 50px;
             border-radius: 50%;
             border: 2px solid rgba(111, 154, 76, 0.5);
+            box-shadow: 0 0 15px rgba(111, 154, 76, 0.3);
         }
         
         .user-details h3 {
@@ -97,9 +99,10 @@
             border-radius: 12px;
             font-size: 0.75em;
             font-weight: 600;
-            background: rgba(111, 154, 76, 0.2);
-            color: #6f9a4c;
+            background: linear-gradient(135deg, rgba(111, 154, 76, 0.2), rgba(78, 100, 64, 0.2));
+            color: #8bc052;
             border: 1px solid rgba(111, 154, 76, 0.4);
+            text-transform: capitalize;
         }
         
         .sign-out-btn {
@@ -116,7 +119,8 @@
         
         .sign-out-btn:hover {
             background: rgba(240, 246, 253, 0.15);
-            border-color: rgba(157, 170, 236, 0.5);
+            border-color: rgba(111, 154, 76, 0.5);
+            color: #8bc052;
         }
         
         .usage-stats {
@@ -132,10 +136,16 @@
         
         .stat-card {
             background: rgba(240, 246, 253, 0.05);
-            border: 1px solid rgba(157, 170, 236, 0.15);
+            border: 1px solid rgba(111, 154, 76, 0.15);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: rgba(111, 154, 76, 0.3);
+            box-shadow: 0 0 20px rgba(111, 154, 76, 0.1);
         }
         
         .stat-label {
@@ -147,7 +157,10 @@
         .stat-value {
             font-size: 2em;
             font-weight: 700;
-            color: rgba(240, 246, 253, 0.95);
+            background: linear-gradient(135deg, #8bc052, #6f9a4c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .stat-sublabel {
@@ -167,9 +180,77 @@
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #6f9a4c, #4e6440);
+            background: linear-gradient(90deg, #8bc052, #6f9a4c, #4e6440);
             border-radius: 4px;
             transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(111, 154, 76, 0.5);
+        }
+        
+        .donation-section {
+            padding: 30px 40px;
+            border-bottom: 1px solid rgba(157, 170, 236, 0.2);
+        }
+        
+        .donation-section h3 {
+            color: #e7c64d;
+            margin-bottom: 0.75rem;
+            font-size: 1.1em;
+        }
+        
+        .donation-section p {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            font-size: 0.9em;
+            color: rgba(240, 246, 253, 0.7);
+        }
+        
+        .donation-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            max-width: 600px;
+        }
+        
+        .donate-btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 0.75rem 1rem;
+            background: rgba(240, 246, 253, 0.05);
+            border: 1px solid rgba(157, 170, 236, 0.2);
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .donate-btn:hover:not(.disabled) {
+            background: rgba(111, 154, 76, 0.08);
+            border-color: rgba(111, 154, 76, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(111, 154, 76, 0.2);
+        }
+        
+        .donate-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        
+        .donate-btn .emoji {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .donate-btn .title {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: rgba(240, 246, 253, 0.9);
+            margin-bottom: 0.15rem;
+        }
+        
+        .donate-btn .subtitle {
+            font-size: 0.75rem;
+            color: rgba(240, 246, 253, 0.5);
         }
         
         .tools-section {
@@ -199,9 +280,10 @@
         }
         
         .tool-card:hover:not(.tool-locked) {
-            background: rgba(157, 170, 236, 0.1);
-            border-color: rgba(157, 170, 236, 0.3);
+            background: rgba(111, 154, 76, 0.08);
+            border-color: rgba(111, 154, 76, 0.3);
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(111, 154, 76, 0.2);
         }
         
         .tool-card.tool-locked {
@@ -227,7 +309,7 @@
         .tool-link {
             display: inline-block;
             padding: 10px 20px;
-            background: linear-gradient(135deg, #6f9a4c, #4e6440);
+            background: linear-gradient(135deg, #8bc052, #6f9a4c);
             color: white;
             border-radius: 8px;
             text-decoration: none;
@@ -237,6 +319,7 @@
         }
         
         .tool-link:hover {
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(111, 154, 76, 0.4);
         }
@@ -257,8 +340,8 @@
         
         .upgrade-section {
             padding: 30px 40px;
-            background: rgba(111, 154, 76, 0.05);
-            border-top: 1px solid rgba(157, 170, 236, 0.2);
+            background: linear-gradient(135deg, rgba(111, 154, 76, 0.05), rgba(78, 100, 64, 0.05));
+            border-top: 1px solid rgba(111, 154, 76, 0.2);
             text-align: center;
         }
         
@@ -276,7 +359,7 @@
         
         .contact-btn {
             padding: 12px 30px;
-            background: linear-gradient(135deg, #6f9a4c, #4e6440);
+            background: linear-gradient(135deg, #8bc052, #6f9a4c);
             color: white;
             border: none;
             border-radius: 8px;
@@ -288,25 +371,129 @@
         }
         
         .contact-btn:hover {
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(111, 154, 76, 0.5);
         }
         
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
             .header {
                 padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
             }
             
             .header-left {
                 width: 100%;
+                margin-bottom: 15px;
             }
             
-            .usage-stats, .tools-section {
+            .logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .header-text h1 {
+                font-size: 1.4em;
+            }
+            
+            .header-text p {
+                font-size: 0.85em;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+            }
+            
+            .user-details {
+                flex: 1;
+                min-width: 150px;
+            }
+            
+            .user-details h3 {
+                font-size: 1em;
+            }
+            
+            .user-photo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .sign-out-btn {
+                padding: 8px 16px;
+                font-size: 0.85em;
+                min-width: 90px;
+            }
+            
+            .usage-stats, .tools-section, .donation-section, .upgrade-section {
                 padding: 20px;
+            }
+            
+            .usage-stats h2, .tools-section h2 {
+                font-size: 1.2em;
+            }
+            
+            .stat-value {
+                font-size: 1.6em;
+            }
+            
+            .stat-card {
+                padding: 15px;
             }
             
             .tool-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .tool-card {
+                padding: 20px;
+            }
+            
+            .tool-card h3 {
+                font-size: 1.1em;
+            }
+            
+            .donation-section h3 {
+                font-size: 1em;
+            }
+            
+            .donation-buttons {
+                flex-direction: column;
+                max-width: 100%;
+            }
+            
+            .donate-btn {
+                min-width: 100%;
+                padding: 1rem;
+            }
+            
+            /* Better touch targets for mobile */
+            .tool-link, .contact-btn {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .stat-value {
+                font-size: 1.4em;
+            }
+            
+            .tool-card p {
+                font-size: 0.9em;
             }
         }
     </style>
@@ -316,7 +503,10 @@
         <div class="glass">
             <div class="header">
                 <div class="header-left">
-                    <img src="https://generateharmony.com/s/Unspeciated_logo_round_trspbknd.png" alt="Unspeciated" class="logo">
+                    <img src="https://generateharmony.com/s/Unspeciated_logo_round_trspbknd.png" 
+                         alt="Unspeciated" 
+                         class="logo"
+                         onerror="this.style.display='none'">
                     <div class="header-text">
                         <h1>Research Portal</h1>
                         <p>Welcome back to Unspeciated™</p>
@@ -344,46 +534,31 @@
                 </div>
             </div>
 
-            <!-- Add after the usage stats section -->
-<div style="padding: 30px 40px; border-bottom: 1px solid rgba(157, 170, 236, 0.2);">
-  <h3 style="color: #e7c64d; margin-bottom: 0.75rem; font-size: 1.1em;">💚 Support This New Paradigm of Education</h3>
-  <p style="margin-bottom: 1rem; line-height: 1.5; font-size: 0.9em; color: rgba(240, 246, 253, 0.7);">These tools are free to use and will remain so. If they're valuable to your work, to your heart, or both, please consider supporting their development and hosting costs.
-  </p>
-  <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; max-width: 600px;">
-    <a href="https://buy.stripe.com/eVqfZhg8k4nm8NZc4eg3605" 
-       target="_blank"
-       style="flex: 1; min-width: 180px; padding: 0.75rem 1rem; 
-              background: rgba(240, 246, 253, 0.05); 
-              border: 1px solid rgba(157, 170, 236, 0.2);
-              border-radius: 8px;
-              text-decoration: none;
-              text-align: center;
-              transition: all 0.3s ease;">
-      <div style="font-size: 1rem; margin-bottom: 0.25rem;">💳</div>
-      <div style="font-weight: 600; font-size: 0.9em; color: rgba(240, 246, 253, 0.9); margin-bottom: 0.15rem;">Donate via Stripe</div>
-      <div style="font-size: 0.75rem; color: rgba(240, 246, 253, 0.5);">Generation of Harmony LLC</div>
-    </a>
-    <a href="#" 
-       target="_blank"
-       style="flex: 1; min-width: 180px; padding: 0.75rem 1rem; 
-              background: rgba(240, 246, 253, 0.05); 
-              border: 1px solid rgba(157, 170, 236, 0.2);
-              border-radius: 8px;
-              text-decoration: none;
-              text-align: center;
-              opacity: 0.4;
-              cursor: not-allowed;
-              transition: all 0.3s ease;">
-      <div style="font-size: 1rem; margin-bottom: 0.25rem;">🎁</div>
-      <div style="font-weight: 600; font-size: 0.9em; color: rgba(240, 246, 253, 0.9); margin-bottom: 0.15rem;">Donate via Givebutter</div>
-      <div style="font-size: 0.75rem; color: rgba(240, 246, 253, 0.5);">Tax-deductible (Coming soon)</div>
-    </a>
-  </div>
-
-  <p style="margin-top: 0.75rem; font-size: 0.8em; color: rgba(240, 246, 253, 0.5);">
-    Your support helps keep these tools free and accessible for people worldwide.
-  </p>
-</div>
+            <div class="donation-section">
+                <h3>💚 Support This New Paradigm of Education</h3>
+                <p>These tools are free to use and will remain so. If they're valuable to your work, to your heart, or both, please consider supporting their development and hosting costs.</p>
+                
+                <div class="donation-buttons">
+                    <a href="https://buy.stripe.com/eVqfZhg8k4nm8NZc4eg3605" 
+                       target="_blank"
+                       class="donate-btn">
+                        <div class="emoji">💳</div>
+                        <div class="title">Donate via Stripe</div>
+                        <div class="subtitle">Generation of Harmony LLC</div>
+                    </a>
+                    
+                    <a href="#" 
+                       class="donate-btn disabled">
+                        <div class="emoji">🎁</div>
+                        <div class="title">Donate via Givebutter</div>
+                        <div class="subtitle">Tax-deductible (Coming soon)</div>
+                    </a>
+                </div>
+                
+                <p style="margin-top: 0.75rem; font-size: 0.8em; color: rgba(240, 246, 253, 0.5);">
+                    Your support helps keep these tools free and accessible for people worldwide.
+                </p>
+            </div>
             
             <div class="tools-section">
                 <h2>Your Research Tools</h2>
@@ -403,16 +578,16 @@
     </div>
     
     <script>
-        // Firebase configuration
+        // Firebase configuration - These are public web API keys, secured by Firebase rules and authorized domains
         const firebaseConfig = {
-  apiKey: "AIzaSyD9y7dqlGUj3bONA9KboTdpvsKJXYhqR4o",
-  authDomain: "redefining-intelligence-suite.firebaseapp.com",
-  projectId: "redefining-intelligence-suite",
-  storageBucket: "redefining-intelligence-suite.firebasestorage.app",
-  messagingSenderId: "933861834236",
-  appId: "1:933861834236:web:77b7c3ed7190050936c679",
-  measurementId: "G-GM2EZ55SGM"
-};
+            apiKey: "AIzaSyD9y7dqlGUj3bONA9KboTdpvsKJXYhqR4o",
+            authDomain: "redefining-intelligence-suite.firebaseapp.com",
+            projectId: "redefining-intelligence-suite",
+            storageBucket: "redefining-intelligence-suite.firebasestorage.app",
+            messagingSenderId: "933861834236",
+            appId: "1:933861834236:web:77b7c3ed7190050936c679",
+            measurementId: "G-GM2EZ55SGM"
+        };
         
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -443,7 +618,7 @@
                 icon: '🗺️',
                 description: '3D visualization using sacred geometry and P/R/A coordinates',
                 url: 'https://unspeciatedmapv2.netlify.app',
-                tier: 'pro'
+                tier: 'supporter'
             },
             {
                 id: 'aiConsciousnessBridge',
@@ -451,7 +626,7 @@
                 icon: '🤖',
                 description: 'Explore interspecies communication with AI assistance',
                 url: 'https://unspeciated-analytics.netlify.app',
-                tier: 'pro'
+                tier: 'supporter'
             },
             {
                 id: 'legalAssistant',
@@ -481,7 +656,7 @@
             
             // Display user info
             document.getElementById('userName').textContent = user.displayName || 'Researcher';
-            document.getElementById('userTier').textContent = userData.tier.charAt(0).toUpperCase() + userData.tier.slice(1);
+            document.getElementById('userTier').textContent = userData.tier;
             
             if (user.photoURL) {
                 const photo = document.getElementById('userPhoto');
@@ -492,11 +667,22 @@
             // Display usage stats
             const searchCount = userData.searchesThisMonth || 0;
             const limit = userData.monthlyLimit || 25;
-            const percentage = (searchCount / limit) * 100;
+            const limitDisplay = limit === -1 ? '∞' : limit;
+            const percentage = limit === -1 ? 100 : (searchCount / limit) * 100;
             
-            document.getElementById('searchCount').textContent = `${searchCount} / ${limit}`;
+            document.getElementById('searchCount').textContent = `${searchCount} / ${limitDisplay}`;
             document.getElementById('progressFill').style.width = `${percentage}%`;
-            document.getElementById('resetDate').textContent = `Resets on ${new Date(userData.resetDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+            
+            // Format reset date nicely
+            if (userData.resetDate) {
+                const resetDate = new Date(userData.resetDate);
+                const formatted = resetDate.toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+                document.getElementById('resetDate').textContent = `Resets on ${formatted}`;
+            }
             
             // Show upgrade section if not unlimited
             if (userData.tier === 'free') {
@@ -516,12 +702,15 @@
                 const card = document.createElement('div');
                 card.className = `tool-card ${hasAccess ? '' : 'tool-locked'}`;
                 
+                const tierLabel = tool.tier === 'supporter' ? 'Supporter' : 
+                                 tool.tier === 'institute' ? 'Institute' : '';
+                
                 card.innerHTML = `
                     <h3>${tool.icon} ${tool.name}</h3>
                     <p>${tool.description}</p>
                     ${hasAccess ? 
                         `<a href="${tool.url}" class="tool-link" target="_blank">Open Tool →</a>` :
-                        `<div class="locked-badge">🔒 ${tool.tier === 'pro' ? 'Supporter' : 'Institute'} Tier</div>`
+                        `<div class="locked-badge">🔒 ${tierLabel} Tier Required</div>`
                     }
                 `;
                 
