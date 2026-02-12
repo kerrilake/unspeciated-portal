@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unspeciated™ Research Portal</title>
+    
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+            min-height: 100vh;
+            color: rgba(240, 246, 253, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .glass {
+            background: rgba(240, 246, 253, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(157, 170, 236, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            padding: 60px 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            color: rgba(240, 246, 253, 0.95);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            color: #6f9a4c;
+            font-size: 1.2em;
+            font-style: italic;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        
+        .description {
+            color: rgba(240, 246, 253, 0.8);
+            font-size: 1.05em;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
+        
+        .sign-in-section {
+            text-align: center;
+            margin: 50px 0;
+        }
+        
+        .google-sign-in-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(111, 154, 76, 0.3);
+        }
+        
+        .google-sign-in-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 154, 76, 0.5);
+        }
+        
+        .google-icon {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 4px;
+            padding: 4px;
+        }
+        
+        .tools-preview {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(157, 170, 236, 0.2);
+        }
+        
+        .tools-preview h2 {
+            text-align: center;
+            color: rgba(240, 246, 253, 0.95);
+            font-size: 1.8em;
+            margin-bottom: 30px;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .tool-card {
+            background: rgba(240, 246, 253, 0.05);
+            border: 1px solid rgba(157, 170, 236, 0.15);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            background: rgba(157, 170, 236, 0.1);
+            border-color: rgba(157, 170, 236, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tool-card h3 {
+            color: rgba(240, 246, 253, 0.95);
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tool-card p {
+            color: rgba(240, 246, 253, 0.7);
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .tier-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: auto;
+        }
+        
+        .tier-free {
+            background: rgba(111, 154, 76, 0.2);
+            color: #6f9a4c;
+            border: 1px solid rgba(111, 154, 76, 0.4);
+        }
+        
+        .tier-pro {
+            background: rgba(157, 170, 236, 0.2);
+            color: #9daaec;
+            border: 1px solid rgba(157, 170, 236, 0.4);
+        }
+        
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: rgba(240, 246, 253, 0.5);
+            font-size: 0.9em;
+        }
+        
+        .footer a {
+            color: rgba(111, 154, 76, 0.8);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            color: #6f9a4c;
+        }
+
+        @media (max-width: 768px) {
+            .glass {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .tagline {
+                font-size: 1em;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glass">
+            <div class="header">
+                <img src="https://generateharmony.com/s/Unspeciated_logo_round_trspbknd.png" alt="Unspeciated" class="logo">
+                <h1>Unspeciated™ Research Portal</h1>
+                <p class="tagline">Redefining Intelligence Through the P/R/A Framework</p>
+                <p class="description">
+                    Explore intelligence as a collaborative field operating across all species. 
+                    Access research tools that bridge scientific rigor with lived experience, 
+                    revealing patterns of perception, relation, and application beyond human-centered assumptions.
+                </p>
+            </div>
+            
+            <div class="sign-in-section">
+                <button class="google-sign-in-btn" id="googleSignInBtn">
+                    <svg class="google-icon" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
+                <p style="margin-top: 20px; color: rgba(240, 246, 253, 0.6); font-size: 0.9em;">
+                    Free account • 25 searches per month
+                </p>
+            </div>
+            
+            <div class="tools-preview">
+                <h2>Research Tools Available</h2>
+                <div class="tool-grid">
+                    <div class="tool-card">
+                        <h3>
+                            🔍 Research Explorer
+                            <span class="tier-badge tier-free">FREE</span>
+                        </h3>
+                        <p>Discover species intelligence through conversational exploration. Compare capabilities across multiple species.</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h3>
+                            🎓 Researchers' Mode
+                            <span class="tier-badge tier-free">FREE</span>
+                        </h3>
+                        <p>Academic research interface with citations, confidence indicators, and peer-reviewed sources.</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h3>
+                            🗺️ Intelligence Map
+                            <span class="tier-badge tier-pro">PRO</span>
+                        </h3>
+                        <p>3D visualization of species intelligence using sacred geometry and P/R/A coordinates.</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h3>
+                            🤖 AI Consciousness Bridge
+                            <span class="tier-badge tier-pro">PRO</span>
+                        </h3>
+                        <p>Explore collaborative and competitive approaches to interspecies communication with AI assistance.</p>
+                    </div>
+                    
+                    <div class="tool-card">
+                        <h3>
+                            ⚖️ Legal Assistant
+                            <span class="tier-badge tier-pro">PRO</span>
+                        </h3>
+                        <p>Generate legal frameworks recognizing non-human intelligence and rights.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>© 2026 Generation of Harmony LLC | Intuitive Learning Foundation</p>
+                <p style="margin-top: 10px;">
+                    <a href="https://generateharmony.com" target="_blank">About</a> • 
+                    <a href="mailto:kerri@generateharmony.com">Contact</a> • 
+                    <a href="https://generateharmony.com/framework" target="_blank">Framework Guide</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBs9bAv7RmUJ_pjJg5-UuN49H1WwF-Gf6g",
+            authDomain: "redefining-intelligence-suite.firebaseapp.com",
+            projectId: "redefining-intelligence-suite",
+            storageBucket: "redefining-intelligence-suite.firebasestorage.app",
+            messagingSenderId: "535824265003",
+            appId: "1:535824265003:web:92fec7c5f3b4dc8b7b8e7e"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Check if already signed in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in, redirect to dashboard
+                window.location.href = 'dashboard.html';
+            }
+        });
+        
+        // Google Sign-In
+        document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            try {
+                const result = await auth.signInWithPopup(provider);
+                const user = result.user;
+                
+                // Check if user exists in Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                
+                if (!userDoc.exists) {
+                    // New user - create profile with free tier
+                    const now = new Date();
+                    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                    
+                    await db.collection('users').doc(user.uid).set({
+                        email: user.email,
+                        displayName: user.displayName,
+                        photoURL: user.photoURL,
+                        tier: 'free',
+                        searchesThisMonth: 0,
+                        monthlyLimit: 25,
+                        resetDate: nextMonth.toISOString().split('T')[0],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        features: {
+                            researchExplorer: true,
+                            researchersMode: true,
+                            intelligenceMap: false,
+                            aiConsciousnessBridge: false,
+                            legalAssistant: false
+                        }
+                    });
+                    
+                    console.log('New user profile created');
+                }
+                
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+                
+            } catch (error) {
+                console.error('Sign-in error:', error);
+                alert('Sign-in failed. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
