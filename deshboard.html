@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Unspeciated™ Research Portal</title>
+    
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
+            min-height: 100vh;
+            color: rgba(240, 246, 253, 0.95);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .glass {
+            background: rgba(240, 246, 253, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(157, 170, 236, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .header {
+            padding: 30px 40px;
+            border-bottom: 1px solid rgba(157, 170, 236, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .header-text h1 {
+            font-size: 1.8em;
+            color: rgba(240, 246, 253, 0.95);
+            margin-bottom: 5px;
+        }
+        
+        .header-text p {
+            color: rgba(240, 246, 253, 0.6);
+            font-size: 0.9em;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid rgba(111, 154, 76, 0.5);
+        }
+        
+        .user-details h3 {
+            font-size: 1.1em;
+            color: rgba(240, 246, 253, 0.95);
+        }
+        
+        .user-tier {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            background: rgba(111, 154, 76, 0.2);
+            color: #6f9a4c;
+            border: 1px solid rgba(111, 154, 76, 0.4);
+        }
+        
+        .sign-out-btn {
+            padding: 10px 20px;
+            background: rgba(240, 246, 253, 0.1);
+            border: 1px solid rgba(157, 170, 236, 0.3);
+            border-radius: 8px;
+            color: rgba(240, 246, 253, 0.8);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sign-out-btn:hover {
+            background: rgba(240, 246, 253, 0.15);
+            border-color: rgba(157, 170, 236, 0.5);
+        }
+        
+        .usage-stats {
+            padding: 30px 40px;
+            border-bottom: 1px solid rgba(157, 170, 236, 0.2);
+        }
+        
+        .usage-stats h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: rgba(240, 246, 253, 0.95);
+        }
+        
+        .stat-card {
+            background: rgba(240, 246, 253, 0.05);
+            border: 1px solid rgba(157, 170, 236, 0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-label {
+            color: rgba(240, 246, 253, 0.6);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: rgba(240, 246, 253, 0.95);
+        }
+        
+        .stat-sublabel {
+            color: rgba(240, 246, 253, 0.5);
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(240, 246, 253, 0.1);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6f9a4c, #4e6440);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .tools-section {
+            padding: 40px;
+        }
+        
+        .tools-section h2 {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            color: rgba(240, 246, 253, 0.95);
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .tool-card {
+            background: rgba(240, 246, 253, 0.05);
+            border: 1px solid rgba(157, 170, 236, 0.15);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tool-card:hover:not(.tool-locked) {
+            background: rgba(157, 170, 236, 0.1);
+            border-color: rgba(157, 170, 236, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .tool-card.tool-locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .tool-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: rgba(240, 246, 253, 0.95);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tool-card p {
+            color: rgba(240, 246, 253, 0.7);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .tool-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tool-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(111, 154, 76, 0.4);
+        }
+        
+        .locked-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            background: rgba(231, 198, 77, 0.2);
+            border: 1px solid rgba(231, 198, 77, 0.4);
+            border-radius: 8px;
+            color: rgba(231, 198, 77, 0.9);
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .upgrade-section {
+            padding: 30px 40px;
+            background: rgba(111, 154, 76, 0.05);
+            border-top: 1px solid rgba(157, 170, 236, 0.2);
+            text-align: center;
+        }
+        
+        .upgrade-section h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: rgba(240, 246, 253, 0.95);
+        }
+        
+        .upgrade-section p {
+            color: rgba(240, 246, 253, 0.7);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .contact-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #6f9a4c, #4e6440);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(111, 154, 76, 0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header-left {
+                width: 100%;
+            }
+            
+            .usage-stats, .tools-section {
+                padding: 20px;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="glass">
+            <div class="header">
+                <div class="header-left">
+                    <img src="https://generateharmony.com/s/Unspeciated_logo_round_trspbknd.png" alt="Unspeciated" class="logo">
+                    <div class="header-text">
+                        <h1>Research Portal</h1>
+                        <p>Welcome back to Unspeciated™</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <h3 id="userName">Loading...</h3>
+                        <span class="user-tier" id="userTier">Free</span>
+                    </div>
+                    <img id="userPhoto" src="" alt="User" class="user-photo" style="display: none;">
+                    <button class="sign-out-btn" id="signOutBtn">Sign Out</button>
+                </div>
+            </div>
+            
+            <div class="usage-stats">
+                <h2>Usage This Month</h2>
+                <div class="stat-card">
+                    <div class="stat-label">Searches Used</div>
+                    <div class="stat-value" id="searchCount">0 / 25</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="stat-sublabel" id="resetDate">Resets on March 1, 2026</div>
+                </div>
+            </div>
+            
+            <div class="tools-section">
+                <h2>Your Research Tools</h2>
+                <div class="tool-grid" id="toolGrid">
+                    <!-- Tools will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="upgrade-section" id="upgradeSection" style="display: none;">
+                <h3>🌟 Unlock Full Access</h3>
+                <p>Interested in unlimited searches and access to all tools? Contact us to discuss Supporter or Institute Partner tiers.</p>
+                <button class="contact-btn" onclick="window.location.href='mailto:kerri@generateharmony.com?subject=Portal Access Upgrade'">
+                    Contact for Upgrade
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBs9bAv7RmUJ_pjJg5-UuN49H1WwF-Gf6g",
+            authDomain: "redefining-intelligence-suite.firebaseapp.com",
+            projectId: "redefining-intelligence-suite",
+            storageBucket: "redefining-intelligence-suite.firebasestorage.app",
+            messagingSenderId: "535824265003",
+            appId: "1:535824265003:web:92fec7c5f3b4dc8b7b8e7e"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Tool definitions
+        const TOOLS = [
+            {
+                id: 'researchExplorer',
+                name: 'Research Explorer',
+                icon: '🔍',
+                description: 'Discover species intelligence through conversational exploration',
+                url: 'https://redefining-intelligence.netlify.app',
+                tier: 'free'
+            },
+            {
+                id: 'researchersMode',
+                name: "Researchers' Mode",
+                icon: '🎓',
+                description: 'Academic research with citations and confidence indicators',
+                url: 'https://riresearchersmode.netlify.app',
+                tier: 'free'
+            },
+            {
+                id: 'intelligenceMap',
+                name: 'Intelligence Map',
+                icon: '🗺️',
+                description: '3D visualization using sacred geometry and P/R/A coordinates',
+                url: 'https://unspeciatedmapv2.netlify.app',
+                tier: 'pro'
+            },
+            {
+                id: 'aiConsciousnessBridge',
+                name: 'AI Consciousness Bridge',
+                icon: '🤖',
+                description: 'Explore interspecies communication with AI assistance',
+                url: 'https://unspeciated-analytics.netlify.app',
+                tier: 'pro'
+            },
+            {
+                id: 'legalAssistant',
+                name: 'Legal Assistant',
+                icon: '⚖️',
+                description: 'Generate legal frameworks for non-human intelligence',
+                url: '#',
+                tier: 'institute'
+            }
+        ];
+        
+        let currentUser = null;
+        let userData = null;
+        
+        // Check authentication
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentUser = user;
+            
+            // Load user data
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            userData = userDoc.data();
+            
+            // Display user info
+            document.getElementById('userName').textContent = user.displayName || 'Researcher';
+            document.getElementById('userTier').textContent = userData.tier.charAt(0).toUpperCase() + userData.tier.slice(1);
+            
+            if (user.photoURL) {
+                const photo = document.getElementById('userPhoto');
+                photo.src = user.photoURL;
+                photo.style.display = 'block';
+            }
+            
+            // Display usage stats
+            const searchCount = userData.searchesThisMonth || 0;
+            const limit = userData.monthlyLimit || 25;
+            const percentage = (searchCount / limit) * 100;
+            
+            document.getElementById('searchCount').textContent = `${searchCount} / ${limit}`;
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('resetDate').textContent = `Resets on ${new Date(userData.resetDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+            
+            // Show upgrade section if not unlimited
+            if (userData.tier === 'free') {
+                document.getElementById('upgradeSection').style.display = 'block';
+            }
+            
+            // Render tools
+            renderTools();
+        });
+        
+        function renderTools() {
+            const toolGrid = document.getElementById('toolGrid');
+            toolGrid.innerHTML = '';
+            
+            TOOLS.forEach(tool => {
+                const hasAccess = userData.features[tool.id];
+                const card = document.createElement('div');
+                card.className = `tool-card ${hasAccess ? '' : 'tool-locked'}`;
+                
+                card.innerHTML = `
+                    <h3>${tool.icon} ${tool.name}</h3>
+                    <p>${tool.description}</p>
+                    ${hasAccess ? 
+                        `<a href="${tool.url}" class="tool-link" target="_blank">Open Tool →</a>` :
+                        `<div class="locked-badge">🔒 ${tool.tier === 'pro' ? 'Supporter' : 'Institute'} Tier</div>`
+                    }
+                `;
+                
+                toolGrid.appendChild(card);
+            });
+        }
+        
+        // Sign out
+        document.getElementById('signOutBtn').addEventListener('click', async () => {
+            await auth.signOut();
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
