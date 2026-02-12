@@ -503,7 +503,7 @@
         <div class="glass">
             <div class="header">
                 <div class="header-left">
-                    <img src="https://images.squarespace-cdn.com/content/6404d194cd10dd208e6bcde9/e438bf7b-d895-4c38-a8fe-31ce60d79077/Unspeciated+logo+round+trspbknd.png" 
+                    <img src="https://images.squarespace-cdn.com/content/6404d194cd10dd208e6bcde9/e438bf7b-d895-4c38-a8fe-31ce60d79077/Unspeciated+logo+round+trspbknd.png?content-type=image%2Fpng" 
                          alt="Unspeciated" 
                          class="logo"
                          onerror="this.style.display='none'">
@@ -654,9 +654,48 @@
             const userDoc = await db.collection('users').doc(user.uid).get();
             userData = userDoc.data();
             
-            // Display user info
-            document.getElementById('userName').textContent = user.displayName || 'Researcher';
-            document.getElementById('userTier').textContent = userData.tier;
+            // DEBUG: Log user data to console
+            console.log('User UID:', user.uid);
+            console.log('User Data:', userData);
+            console.log('Features:', userData?.features);
+            
+            // If no user data exists, create it now as fallback
+            if (!userData) {
+                console.warn('No user document found! Creating one now...');
+                const now = new Date();
+                const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                
+                userData = {
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    tier: 'free',
+                    searchesThisMonth: 0,
+                    monthlyLimit: 25,
+                    resetDate: nextMonth.toISOString().split('T')[0],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    features: {
+                        researchExplorer: true,
+                        researchersMode: true,
+                        intelligenceMap: false,
+                        aiConsciousnessBridge: false,
+                        legalAssistant: false
+                    }
+                };
+                
+                // Try to create the document
+                try {
+                    await db.collection('users').doc(user.uid).set(userData);
+                    console.log('User document created successfully from dashboard!');
+                } catch (error) {
+                    console.error('Failed to create user document:', error);
+                    alert('Account setup incomplete. Please contact support.');
+                }
+            }
+            
+            // Display user info with safe defaults
+            document.getElementById('userName').textContent = user.displayName || userData?.displayName || 'Researcher';
+            document.getElementById('userTier').textContent = userData?.tier || 'free';
             
             if (user.photoURL) {
                 const photo = document.getElementById('userPhoto');
@@ -664,9 +703,9 @@
                 photo.style.display = 'block';
             }
             
-            // Display usage stats
-            const searchCount = userData.searchesThisMonth || 0;
-            const limit = userData.monthlyLimit || 25;
+            // Display usage stats with safe defaults
+            const searchCount = userData?.searchesThisMonth || 0;
+            const limit = userData?.monthlyLimit || 25;
             const limitDisplay = limit === -1 ? '∞' : limit;
             const percentage = limit === -1 ? 100 : (searchCount / limit) * 100;
             
@@ -674,7 +713,7 @@
             document.getElementById('progressFill').style.width = `${percentage}%`;
             
             // Format reset date nicely
-            if (userData.resetDate) {
+            if (userData?.resetDate) {
                 const resetDate = new Date(userData.resetDate);
                 const formatted = resetDate.toLocaleDateString('en-US', { 
                     month: 'long', 
@@ -685,7 +724,7 @@
             }
             
             // Show upgrade section if not unlimited
-            if (userData.tier === 'free') {
+            if (!userData || userData.tier === 'free') {
                 document.getElementById('upgradeSection').style.display = 'block';
             }
             
@@ -697,8 +736,36 @@
             const toolGrid = document.getElementById('toolGrid');
             toolGrid.innerHTML = '';
             
+            // DEBUG: Check if userData and features exist
+            console.log('Rendering tools...');
+            console.log('userData exists:', !!userData);
+            console.log('userData.features exists:', !!userData?.features);
+            
+            // If no features field, create default (free tier gets first 2 tools)
+            if (!userData || !userData.features) {
+                console.warn('No features field found! Creating default...');
+                // Default features for free tier
+                const defaultFeatures = {
+                    researchExplorer: true,
+                    researchersMode: true,
+                    intelligenceMap: false,
+                    aiConsciousnessBridge: false,
+                    legalAssistant: false
+                };
+                
+                if (userData) {
+                    userData.features = defaultFeatures;
+                } else {
+                    console.error('No userData at all!');
+                    toolGrid.innerHTML = '<p style="color: rgba(240, 246, 253, 0.6); padding: 20px;">Unable to load tools. Please refresh the page.</p>';
+                    return;
+                }
+            }
+            
             TOOLS.forEach(tool => {
                 const hasAccess = userData.features[tool.id];
+                console.log(`Tool: ${tool.name}, Has Access: ${hasAccess}`);
+                
                 const card = document.createElement('div');
                 card.className = `tool-card ${hasAccess ? '' : 'tool-locked'}`;
                 
@@ -716,6 +783,8 @@
                 
                 toolGrid.appendChild(card);
             });
+            
+            console.log(`Rendered ${TOOLS.length} tools`);
         }
         
         // Sign out
